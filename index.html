@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invitación de Boda - Carmen & Saul</title>
+  
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  
+  <style>
+    :root { --vh: 1vh; }
+    body { font-family: 'Raleway', sans-serif; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    .page { min-height: calc(100 * min(var(--vh, 1vh), 1vh)); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem; position: relative; overflow: hidden; }
+    .page.active { display: flex; }
+    .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.4); transition: all 0.3s; cursor: pointer; }
+    .nav-dot.active { background: #d4a574; transform: scale(1.4); }
+    .fade-in { animation: fadeIn 0.6s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .countdown-box { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 1rem 1.5rem; min-width: 80px; text-align: center; }
+    .img-frame { border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    
+    /* Animación de rotación para cuando la música está activa */
+    .rotating { animation: spin 4s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="w-full overflow-hidden">
+
+  <audio id="bg-music" src="musica.mp3" loop></audio>
+
+  <button id="music-toggle" onclick="toggleMusic()" class="fixed left-6 bottom-6 z-50 w-12 h-12 bg-amber-950/80 hover:bg-amber-950 text-amber-100 rounded-full flex items-center justify-center shadow-lg border border-amber-500/30 transition-all active:scale-95" aria-label="Reproducir música">
+    <i id="music-icon" data-lucide="music" style="width:22px;height:22px;"></i>
+  </button>
+
+  <nav class="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3" aria-label="Navegación de páginas">
+    <button class="nav-dot active" onclick="goToPage(0)" aria-label="Página 1"></button> 
+    <button class="nav-dot" onclick="goToPage(1)" aria-label="Página 2"></button> 
+    <button class="nav-dot" onclick="goToPage(2)" aria-label="Página 3"></button> 
+    <button class="nav-dot" onclick="goToPage(3)" aria-label="Página 4"></button> 
+    <button class="nav-dot" onclick="goToPage(4)" aria-label="Página 5"></button> 
+    <button class="nav-dot" onclick="goToPage(5)" aria-label="Página 6"></button> 
+    <button class="nav-dot" onclick="goToPage(6)" aria-label="Página 7"></button>
+  </nav>
+
+  <section class="page active fade-in" style="background: linear-gradient(135deg, #e8dcc8 0%, #d4c4a8 50%, #c8b89c 100%);">
+    <div class="text-center max-w-lg relative z-10">
+      <p class="text-amber-900 tracking-[0.3em] uppercase text-sm mb-4" style="color: rgb(146, 64, 14); font-weight: 300; font-size: 14px;">Nuestra Boda</p>
+      <h1 class="text-amber-950 mb-6" style="color: rgb(120, 53, 15); font-weight: 700; font-size: 42px;">Carmen & Saul</h1>
+      <div class="img-frame w-80 h-80 mx-auto mb-6">
+        <img class="w-full h-full object-cover object-top" src="portada.png" alt="Carmen y Saul Portada">
+      </div>
+      <p class="text-amber-800 text-xl tracking-wide" style="color: rgb(146, 64, 14); font-weight: 400; font-size: 16px;">26 de Septiembre, 2026</p>
+    </div>
+    <button onclick="goToPage(1)" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition animate-bounce">
+      <i data-lucide="chevron-down" style="width:32px;height:32px;"></i>
+    </button>
+  </section>
+
+  <section class="page" style="background: linear-gradient(180deg, #c8b89c 0%, #d4a574 100%);">
+    <button onclick="goToPage(0)" class="absolute top-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition z-10">
+      <i data-lucide="chevron-up" style="width:32px;height:32px;"></i>
+    </button>
+    <div class="text-center max-w-lg fade-in relative z-10">
+      <h2 class="text-amber-950 mb-2" style="color: rgb(120, 53, 15); font-weight: 600; font-size: 32px;">Faltan...</h2>
+      <p class="text-amber-800 mb-10" style="color: rgb(146, 64, 14); font-weight: 400; font-size: 16px;">para el día más especial de nuestras vidas</p>
+      <div class="flex gap-4 justify-center flex-wrap">
+        <div class="countdown-box" style="background: rgba(212,165,116,0.3); border-color: rgba(212,165,116,0.5);">
+          <span id="cd-days" class="text-3xl font-bold text-amber-950">0</span>
+          <p class="text-amber-800 text-xs mt-1">Días</p>
+        </div>
+        <div class="countdown-box" style="background: rgba(212,165,116,0.3); border-color: rgba(212,165,116,0.5);">
+          <span id="cd-hours" class="text-3xl font-bold text-amber-950">0</span>
+          <p class="text-amber-800 text-xs mt-1">Horas</p>
+        </div>
+        <div class="countdown-box" style="background: rgba(212,165,116,0.3); border-color: rgba(212,165,116,0.5);">
+          <span id="cd-mins" class="text-3xl font-bold text-amber-950">0</span>
+          <p class="text-amber-800 text-xs mt-1">Minutos</p>
+        </div>
+        <div class="countdown-box" style="background: rgba(212,165,116,0.3); border-color: rgba(212,165,116,0.5);">
+          <span id="cd-secs" class="text-3xl font-bold text-amber-950">0</span>
+          <p class="text-amber-800 text-xs mt-1">Segundos</p>
+        </div>
+      </div>
+    </div>
+    <button onclick="goToPage(2)" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition animate-bounce z-10">
+      <i data-lucide="chevron-down" style="width:32px;height:32px;"></i>
+    </button>
+  </section>
+
+  <section class="page" style="background: linear-gradient(135deg, #d4a574 0%, #c8a06c 100%);">
+    <button onclick="goToPage(1)" class="absolute top-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition z-10">
+      <i data-lucide="chevron-up" style="width:32px;height:32px;"></i>
+    </button>
+    <div class="text-center max-w-lg fade-in relative z-10">
+      <h2 class="text-amber-950 mb-4" style="color: rgb(120, 53, 15); font-weight: 700; font-size: 24px;">Nuestra Historia</h2>
+      <div class="img-frame w-80 h-56 mx-auto mb-6">
+        <img class="w-full h-full object-cover" src="historia.png" alt="Carmen y Saul Historia">
+      </div>
+      <p class="text-amber-900 leading-relaxed px-4" style="color: rgb(146, 64, 14); font-weight: 400; font-size: 16px;">
+        Nos conocimos una noche de verano y desde entonces supimos que nuestros caminos estaban destinados a unirse. Después de 20 años juntos, ya nos consideramos esposos, pero estamos listos para celebrar de manera oficial este gran paso al altar junto a ustedes.
+      </p>
+    </div>
+    <button onclick="goToPage(3)" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition animate-bounce z-10">
+      <i data-lucide="chevron-down" style="width:32px;height:32px;"></i>
+    </button>
+  </section>
+
+  <section class="page" style="background: linear-gradient(180deg, #c8a06c 0%, #e8dcc8 100%);">
+    <button onclick="goToPage(2)" class="absolute top-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition z-10">
+      <i data-lucide="chevron-up" style="width:32px;height:32px;"></i>
+    </button>
+    <div class="text-center max-w-lg fade-in relative z-10">
+      <h2 class="text-amber-950 mb-4" style="color: rgb(120, 53, 15); font-weight: 700; font-size: 24px;">Lugar de encuentro</h2>
+      <div class="img-frame w-72 h-48 mx-auto mb-6">
+        <img class="w-full h-full object-cover" loading="lazy" src="https://images.pexels.com/photos/2291462/pexels-photo-2291462.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Iglesia/Local de bodas">
+      </div>
+      <p class="text-amber-800 text-lg mb-2" style="color: rgb(184, 134, 11); font-weight: 600; font-size: 16px;">Iglesia San Casa</p>
+      <p class="text-amber-700 px-4" style="color: rgb(133, 77, 14); font-weight: 400; font-size: 15px;">Av. Max Forzini 2161 Urb. El Pacifico, San Martin de Porres</p>
+      <p class="text-amber-900 mt-3" style="color: rgb(184, 134, 11); font-weight: 500; font-size: 18px;">1:00 PM</p>
+      <a href="https://maps.app.goo.gl/EkbdUSZBoUFPaP9m8" target="_blank" rel="noopener noreferrer" class="inline-block mt-6 px-6 py-2 rounded-lg font-medium transition hover:opacity-90" style="background: rgb(212, 165, 116); color: rgb(120, 53, 15); font-weight: 600; font-size: 16px;">Ver en Mapa</a>
+    </div>
+    <button onclick="goToPage(4)" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition animate-bounce z-10">
+      <i data-lucide="chevron-down" style="width:32px;height:32px;"></i>
+    </button>
+  </section>
+
+  <section class="page" style="background: linear-gradient(135deg, #e8dcc8 0%, #d4c4a8 100%);">
+    <button onclick="goToPage(3)" class="absolute top-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition z-10">
+      <i data-lucide="chevron-up" style="width:32px;height:32px;"></i>
+    </button>
+    <div class="text-center max-w-lg fade-in relative z-10 w-full px-4">
+      <h2 class="text-amber-950 mb-8" style="color: rgb(120, 53, 15); font-weight: 700; font-size: 24px;">Itinerario de la boda</h2>
+      <div class="relative">
+        <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-amber-950/30 transform -translate-x-1/2"></div>
+        <div class="space-y-6">
+          
+          <div class="flex items-center gap-4">
+            <div class="flex-1 text-right pr-4">
+              <p class="text-amber-950 font-semibold" style="color: rgb(120, 53, 15); font-weight: 600; font-size: 15px;">13:00 pm</p>
+              <p class="text-amber-800 text-sm" style="color: rgb(146, 64, 14);">Ceremonia</p>
+            </div>
+            <div class="w-10 h-10 bg-amber-100 rounded-full relative z-10 border-2 border-amber-950 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="church" style="width:20px;height:20px;color:#78350f;"></i>
+            </div>
+            <div class="flex-1"></div>
+          </div>
+          
+          <div class="flex items-center gap-4">
+            <div class="flex-1"></div>
+            <div class="w-10 h-10 bg-amber-100 rounded-full relative z-10 border-2 border-amber-950 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="camera" style="width:20px;height:20px;color:#78350f;"></i>
+            </div>
+            <div class="flex-1 text-left pl-4">
+              <p class="text-amber-950 font-semibold" style="color: rgb(120, 53, 15); font-weight: 600; font-size: 15px;">13:30 pm</p>
+              <p class="text-amber-800 text-sm" style="color: rgb(146, 64, 14);">Photocall</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-4">
+            <div class="flex-1 text-right pr-4">
+              <p class="text-amber-950 font-semibold" style="color: rgb(120, 53, 15); font-weight: 600; font-size: 15px;">14:30 pm</p>
+              <p class="text-amber-800 text-sm" style="color: rgb(146, 64, 14);">Cocktail</p>
+            </div>
+            <div class="w-10 h-10 bg-amber-100 rounded-full relative z-10 border-2 border-amber-950 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="wine" style="width:20px;height:20px;color:#78350f;"></i>
+            </div>
+            <div class="flex-1"></div>
+          </div>
+          
+          <div class="flex items-center gap-4">
+            <div class="flex-1"></div>
+            <div class="w-10 h-10 bg-amber-100 rounded-full relative z-10 border-2 border-amber-950 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="utensils" style="width:20px;height:20px;color:#78350f;"></i>
+            </div>
+            <div class="flex-1 text-left pl-4">
+              <p class="text-amber-950 font-semibold" style="color: rgb(120, 53, 15); font-weight: 600; font-size: 15px;">15:30 pm</p>
+              <p class="text-amber-800 text-sm" style="color: rgb(146, 64, 14);">Comida</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-4">
+            <div class="flex-1 text-right pr-4">
+              <p class="text-amber-950 font-semibold" style="color: rgb(120, 53, 15); font-weight: 600; font-size: 15px;">17:00 pm</p>
+              <p class="text-amber-800 text-sm" style="color: rgb(146, 64, 14);">Fiesta</p>
+            </div>
+            <div class="w-10 h-10 bg-amber-100 rounded-full relative z-10 border-2 border-amber-950 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="music" style="width:20px;height:20px;color:#78350f;"></i>
+            </div>
+            <div class="flex-1"></div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <button onclick="goToPage(5)" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition animate-bounce z-10">
+      <i data-lucide="chevron-down" style="width:32px;height:32px;"></i>
+    </button>
+  </section>
+
+  <section class="page" style="background: linear-gradient(180deg, #d4c4a8 0%, #d4a574 100%);">
+    <button onclick="goToPage(4)" class="absolute top-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition z-10">
+      <i data-lucide="chevron-up" style="width:32px;height:32px;"></i>
+    </button>
+    <div class="text-center max-w-lg fade-in relative z-10 px-4">
+      <h2 class="text-amber-950 mb-4" style="color: rgb(120, 53, 15); font-weight: 700; font-size: 24px;">Código de Vestimenta</h2>
+      <div class="img-frame w-72 h-48 mx-auto mb-4">
+        <img class="w-full h-full object-cover" src="vestimenta.png" alt="Codigo Vestimenta Carmen y Saul">
+      </div>
+      <p class="text-amber-900 mb-6 text-sm md:text-base leading-relaxed" style="color: rgb(146, 64, 14);">
+        Formal / Etiqueta. Evitar el color blanco (exclusivo para la novia) y el color crema, por favor.
+      </p>
+      <h3 class="text-amber-950 mb-2" style="color: rgb(120, 53, 15); font-weight: 600; font-size: 22px;">Mesa de Regalos</h3>
+      <p class="text-amber-800 text-xs md:text-sm bg-white/20 p-4 rounded-xl border border-amber-950/10 leading-relaxed" style="color: rgb(146, 64, 14);">
+        Tu presencia es nuestro mejor regalo. Si deseas obsequiarnos algo, aquí te dejamos:<br>
+        <strong>YAPE/PLIN:</strong> 958 749 287<br>
+        <strong>CCI BCP:</strong> 00219111092316209554
+      </p>
+    </div>
+    <button onclick="goToPage(6)" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition animate-bounce z-10">
+      <i data-lucide="chevron-down" style="width:32px;height:32px;"></i>
+    </button>
+  </section>
+
+  <section class="page" style="background: linear-gradient(135deg, #d4a574 0%, #e8dcc8 100%);">
+    <button onclick="goToPage(5)" class="absolute top-8 left-1/2 -translate-x-1/2 text-amber-800/70 hover:text-amber-950 transition z-10">
+      <i data-lucide="chevron-up" style="width:32px;height:32px;"></i>
+    </button>
+    <div class="w-full max-w-md fade-in relative z-10 px-6">
+      <h2 class="text-amber-950 text-center mb-6" style="color: rgb(120, 53, 15); font-weight: 700; font-size: 24px;">Confirma tu Asistencia</h2>
+      
+      <form id="rsvp-form" class="space-y-4">
+        <div>
+          <label for="guest-name" class="text-amber-800 text-sm block mb-1" style="color: rgb(146, 64, 14);">Tu nombre completo</label>
+          <input id="guest-name" type="text" required class="w-full px-4 py-2.5 rounded-lg bg-white/30 border border-amber-900/20 text-amber-950 placeholder-amber-700/50 focus:outline-none focus:border-amber-900">
+        </div>
+        <div>
+          <label for="attendance" class="text-amber-800 text-sm block mb-1" style="color: rgb(146, 64, 14);">¿Asistirás?</label>
+          <select id="attendance" required class="w-full px-4 py-2.5 rounded-lg bg-white/30 border border-amber-900/20 text-amber-950 focus:outline-none focus:border-amber-900">
+            <option value="" class="text-gray-900">Seleccionar...</option>
+            <option value="si" class="text-gray-900">Sí, asistiré</option>
+            <option value="no" class="text-gray-900">No podré asistir</option>
+          </select>
+        </div>
+        <div>
+          <label for="num-guests" class="text-amber-800 text-sm block mb-1" style="color: rgb(146, 64, 14);">Número de acompañantes</label>
+          <input id="num-guests" type="number" min="0" max="10" value="0" class="w-full px-4 py-2.5 rounded-lg bg-white/30 border border-amber-900/20 text-amber-950 focus:outline-none focus:border-amber-900">
+        </div>
+        <div>
+          <label for="message" class="text-amber-800 text-sm block mb-1" style="color: rgb(146, 64, 14);">Mensaje para los novios</label>
+          <textarea id="message" rows="2" class="w-full px-4 py-2.5 rounded-lg bg-white/30 border border-amber-900/20 text-amber-950 placeholder-amber-700/50 focus:outline-none focus:border-amber-900"></textarea>
+        </div>
+        <button type="submit" class="w-full py-3 rounded-lg font-medium transition hover:opacity-90" style="background: rgb(212, 165, 116); color: rgb(120, 53, 15); font-weight: 600; font-size: 16px;">
+          Confirmar Asistencia
+        </button>
+      </form>
+
+      <div id="rsvp-success" class="hidden text-center bg-white/20 p-6 rounded-2xl border border-amber-950/10">
+        <i data-lucide="heart" style="width:48px;height:48px;color:#92400e;" class="mx-auto mb-4 animate-pulse"></i>
+        <p class="text-amber-950 text-xl font-medium mb-4">¡Gracias por confirmar!</p>
+        <p class="text-amber-900 mb-6 text-sm">Para ayudarnos a registrarlo de inmediato, por favor envía tus datos por WhatsApp con el siguiente botón:</p>
+        <a id="whatsapp-btn" href="#" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-6 rounded-lg transition shadow-md">
+          <i data-lucide="message-square" style="width:20px;height:20px;"></i>
+          Enviar por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let currentPage = 0;
+    const pages = document.querySelectorAll('.page');
+    const dots = document.querySelectorAll('.nav-dot');
+    let isTransitioning = false;
+
+    // Función para navegar entre páginas
+    function goToPage(idx) {
+      if (idx < 0 || idx >= pages.length) return;
+      pages[currentPage].classList.remove('active');
+      dots[currentPage].classList.remove('active');
+      currentPage = idx;
+      pages[currentPage].classList.add('active');
+      dots[currentPage].classList.add('active');
+    }
+
+    // LÓGICA DE LA MÚSICA DE FONDO
+    const audio = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-toggle');
+    const musicIcon = document.getElementById('music-icon');
+
+    function toggleMusic() {
+      if (audio.paused) {
+        audio.play().then(() => {
+          musicBtn.classList.add('rotating');
+          musicIcon.setAttribute('data-lucide', 'pause');
+          lucide.createIcons(); // Recarga el icono a "pausa"
+        }).catch(err => {
+          console.log("Error al reproducir música: ", err);
+        });
+      } else {
+        audio.pause();
+        musicBtn.classList.remove('rotating');
+        musicIcon.setAttribute('data-lucide', 'music');
+        lucide.createIcons(); // Recarga el icono a "nota musical"
+      }
+    }
+
+    // Intentar reproducir automáticamente si interactúan con cualquier parte de la pantalla (truco para saltar bloqueo)
+    document.addEventListener('click', () => {
+      if (audio.paused && audio.currentTime === 0) {
+        audio.play().then(() => {
+          musicBtn.classList.add('rotating');
+          musicIcon.setAttribute('data-lucide', 'pause');
+          lucide.createIcons();
+        }).catch(() => {});
+      }
+    }, { once: true }); // Solo se ejecuta una vez al primer toque
+
+    // 1. Soporte Táctil (Móviles)
+    let touchStartY = 0;
+    document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+    document.addEventListener('touchend', e => {
+      const diff = touchStartY - e.changedTouches[0].clientY;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0 && currentPage < 6) goToPage(currentPage + 1);
+        else if (diff < 0 && currentPage > 0) goToPage(currentPage - 1);
+      }
+    }, { passive: true });
+
+    // 2. Soporte Teclado
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' && currentPage < 6) goToPage(currentPage + 1);
+      if (e.key === 'ArrowUp' && currentPage > 0) goToPage(currentPage - 1);
+    });
+
+    // 3. Soporte Rueda del Ratón (Navegación Desktop fluida)
+    document.addEventListener('wheel', e => {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      setTimeout(() => { isTransitioning = false; }, 800); // cooldown
+
+      if (e.deltaY > 0 && currentPage < 6) {
+        goToPage(currentPage + 1);
+      } else if (e.deltaY < 0 && currentPage > 0) {
+        goToPage(currentPage - 1);
+      }
+    }, { passive: true });
+
+    // 4. Cuenta regresiva (Target: 26 Septiembre 2026)
+    const weddingDate = new Date('2026-09-26T13:00:00-05:00'); // Hora de la ceremonia
+    function updateCountdown() {
+      const now = new Date();
+      const diff = weddingDate - now;
+      if (diff <= 0) {
+        document.getElementById('cd-days').textContent = "0";
+        document.getElementById('cd-hours').textContent = "0";
+        document.getElementById('cd-mins').textContent = "0";
+        document.getElementById('cd-secs').textContent = "0";
+        return;
+      }
+      document.getElementById('cd-days').textContent = Math.floor(diff / 86400000);
+      document.getElementById('cd-hours').textContent = Math.floor((diff % 86400000) / 3600000);
+      document.getElementById('cd-mins').textContent = Math.floor((diff % 3600000) / 60000);
+      document.getElementById('cd-secs').textContent = Math.floor((diff % 60000) / 1000);
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // 5. Manejo de RSVP por WhatsApp
+    document.getElementById('rsvp-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const guestName = document.getElementById('guest-name').value;
+      const attendance = document.getElementById('attendance').value === 'si' ? 'Sí, asistiré 💍' : 'No podré asistir 😔';
+      const numGuests = document.getElementById('num-guests').value;
+      const message = document.getElementById('message').value;
+
+      const tuNumeroWhatsapp = "51958749287"; 
+
+      // Construcción del mensaje pre-armado de WhatsApp
+      const textoMensaje = `¡Hola Carmen y Saul! 👋%0AConfirmación de Asistencia:%0A%0A*Nombre:* ${encodeURIComponent(guestName)}%0A*¿Asiste?:* ${encodeURIComponent(attendance)}%0A*Acompañantes:* ${numGuests}%0A*Mensaje:* ${encodeURIComponent(message)}`;
+      const urlWhatsapp = `https://api.whatsapp.com/send?phone=${tuNumeroWhatsapp}&text=${textoMensaje}`;
+
+      // Configurar el botón de éxito de WhatsApp
+      const waBtn = document.getElementById('whatsapp-btn');
+      waBtn.href = urlWhatsapp;
+
+      // Ocultar formulario y mostrar éxito
+      document.getElementById('rsvp-form').classList.add('hidden');
+      document.getElementById('rsvp-success').classList.remove('hidden');
+    });
+
+    // Iniciar Lucide Icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>
